@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hide Posts Animation</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .post {
+      background-color: limegreen;
+      color: black;
+      font-size: 20px;
+      padding: 20px;
+      margin: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button.hide {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    /* Animation ตอนซ่อนโพสต์ */
+    @keyframes hide {
+      0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+      }
+
+      75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px;
+      }
+
+      100% {
+        opacity: 0;
+        height: 0%;
+        line-height: 0%;
+        padding: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    /* ใช้กับโพสต์ที่กำลังถูกลบ */
+    .removing {
+      animation-name: hide;
+      animation-duration: 0.6s;
+      animation-fill-mode: forwards;
+    }
+  </style>
+
+  <script>
+    // เริ่มโพสต์แรก
+    let counter = 1;
+
+    // โหลดครั้งละ 20 โพสต์
+    const quantity = 20;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      load();
+
+      // โหลดเพิ่มเมื่อเลื่อนถึงล่างสุด
+      window.onscroll = () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1) {
+          load();
+        }
+      };
+
+      // คลิกปุ่ม Hide เพื่อลบโพสต์
+      document.addEventListener('click', event => {
+        const element = event.target;
+        if (element.className === 'hide') {
+          const post = element.parentElement;
+          post.classList.add('removing');
+          setTimeout(() => post.remove(), 600);
+        }
+      });
+    });
+
+    // ฟังก์ชันโหลดโพสต์
+    function load() {
+      const start = counter;
+      const end = start + quantity - 1;
+      counter = end + 1;
+
+      for (let i = start; i <= end; i++) {
+        const post = document.createElement('div');
+        post.className = 'post';
+        post.innerHTML = `Post #${i}`;
+
+        // เพิ่มปุ่ม Hide
+        const button = document.createElement('button');
+        button.className = 'hide';
+        button.innerHTML = 'Hide';
+        post.append(button);
+
+        document.querySelector('#posts').append(post);
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="posts"></div>
+</body>
+</html>
